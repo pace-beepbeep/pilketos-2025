@@ -2,24 +2,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f0f4f8;
-    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Mengubah ini agar konten tidak selalu di tengah vertikal */
     min-height: 100vh;
 }
 
 .container {
-    width: 100%;
-    max-width: 1000px;
     background-color: #ffffff;
-    padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    /* --- UBAH BAGIAN INI --- */
+    width: 90%; /* Menggunakan persentase untuk responsif */
+    max-width: 1200px; /* Batas lebar maksimal yang lebih besar */
+    /* --- END UBAH BAGIAN INI --- */
     text-align: center;
 }
 
@@ -34,11 +35,11 @@ header p {
 }
 
 #candidates-container {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ubah minmax jika ingin kartu lebih besar */
     gap: 30px;
-    flex-wrap: wrap;
-    margin-bottom: 50px;
+    margin-top: 30px;
+    justify-content: center; /* Memastikan kartu di tengah jika tidak memenuhi baris penuh */
 }
 
 .candidate-card {
@@ -288,4 +289,5 @@ img {
 
 .modal-button:hover {
     background-color: #0056b3;
+
 }
