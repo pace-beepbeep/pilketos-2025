@@ -1,0 +1,291 @@
+/* Import Font dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+header h1 {
+    color: #0056b3;
+    margin-bottom: 5px;
+}
+
+header p {
+    color: #666;
+    margin-bottom: 40px;
+}
+
+#candidates-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+}
+
+.candidate-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.candidate-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 86, 179, 0.15);
+}
+
+.candidate-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.candidate-card h3 {
+    margin: 10px 0 5px 0;
+    color: #0056b3;
+}
+
+.vote-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.vote-btn:hover {
+    background-color: #0056b3;
+}
+
+.vote-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.results-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+#file-input {
+    margin: 15px 0;
+}
+
+#results-output {
+    margin-top: 15px;
+    text-align: left;
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+/* Tambahkan di akhir file style.css */
+.progress-container {
+    text-align: left;
+    margin-top: 20px;
+}
+.result-bar {
+    margin-bottom: 15px;
+}
+.result-info {
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+.progress {
+    background-color: #e9ecef;
+    border-radius: .375rem;
+    height: 25px;
+    overflow: hidden;
+}
+.progress-bar {
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
+img {
+  max-width: 100%;  /* supaya tidak lebih besar dari resolusi asli */
+  height: auto;     /* biar tidak ketarik */
+  image-rendering: auto; /* default, hasil lebih halus */
+}
+/* Tambahkan di akhir file style.css */
+#chart-container {
+    position: relative;
+    margin: auto;
+    height: 60vh; /* Tinggi 60% dari viewport */
+    max-height: 400px; /* Batas tinggi maksimal */
+    max-width: 400px; /* Batas lebar maksimal */
+}
+
+#total-votes {
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+/* ... (semua style dari sebelumnya tetap ada) ... */
+
+/* Tambahkan di akhir file */
+.results-link-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.results-button {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.results-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.back-button {
+    background-color: #6c757d;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
+.results-display {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+#chart-container {
+    position: relative;
+    height: 300px;
+    width: 300px;
+    flex-shrink: 0;
+}
+
+#breakdown-container {
+    flex-grow: 1;
+    min-width: 300px;
+    text-align: left;
+}
+
+/* ... (semua style dari sebelumnya tetap ada) ... */
+
+/* ================================== */
+/* TAMBAHKAN STYLE MODAL DI BAWAH INI */
+/* ================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none; /* Sembunyikan secara default */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 400px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-content h2 {
+    color: #28a745;
+    margin-top: 0;
+}
+
+.modal-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+.modal-button:hover {
+    background-color: #0056b3;
+}
