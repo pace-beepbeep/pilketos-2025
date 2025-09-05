@@ -2,26 +2,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Mengubah ini agar konten tidak selalu di tengah vertikal */
+    align-items: center;
     min-height: 100vh;
 }
 
 .container {
+    width: 100%;
+    max-width: 1000px;
     background-color: #ffffff;
+    padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    /* --- UBAH BAGIAN INI --- */
-    width: 90%; /* Menggunakan persentase untuk responsif */
-    max-width: 1200px; /* Batas lebar maksimal yang lebih besar */
-    /* --- END UBAH BAGIAN INI --- */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+header {
+    margin-bottom: 1px;
 }
 
 header h1 {
@@ -31,15 +34,15 @@ header h1 {
 
 header p {
     color: #666;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
 }
 
 #candidates-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ubah minmax jika ingin kartu lebih besar */
+    display: flex;
+    justify-content: center;
     gap: 30px;
-    margin-top: 30px;
-    justify-content: center; /* Memastikan kartu di tengah jika tidak memenuhi baris penuh */
+    flex-wrap: wrap;
+    margin-bottom: 50px;
 }
 
 .candidate-card {
@@ -49,6 +52,11 @@ header p {
     padding: 20px;
     width: 250px;
     transition: transform 0.3s, box-shadow 0.3s;
+    /* koreksi */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
 }
 
 .candidate-card:hover {
@@ -289,5 +297,42 @@ img {
 
 .modal-button:hover {
     background-color: #0056b3;
+}
 
+/* style.css */
+
+.visi {
+    text-align: left;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 15px;
+
+    /* --- GANTI BAGIAN INI --- */
+    
+    /* Atur tinggi tetap untuk area visi */
+    max-height: 150px; /* Anda bisa sesuaikan tingginya */
+    
+    /* Perintah untuk menampilkan scrollbar HANYA jika teksnya panjang */
+    overflow-y: auto;
+    
+    /* Beri sedikit ruang di kanan agar scrollbar tidak menempel teks */
+    padding-right: 10px; 
+    
+    /* --- AKHIR BAGIAN PERUBAHAN --- */
+}
+
+/* Kustomisasi tampilan scrollbar (opsional, tapi membuat lebih keren) */
+.visi::-webkit-scrollbar {
+    width: 6px;
+}
+.visi::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.visi::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+.visi::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
 }
