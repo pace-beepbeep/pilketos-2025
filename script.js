@@ -12,7 +12,6 @@
   measurementId: "G-J1J5VMVETY"
 };
       firebase.initializeApp(firebaseConfig);
-    </script>// =======================================
 // PENJAGA HALAMAN (GATEKEEPER)
 // =======================================
 // Cek data login dari localStorage
@@ -122,4 +121,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
