@@ -129,7 +129,7 @@ majorSelect.addEventListener("change", function () {
 // ===============================
 // 2. Event Listener saat FORM DI-SUBMIT
 // ===============================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwK9YJ75yvNoY4DWg7eshCEa1ftUzLgX3jd52dzu_OFB3iX0pecFOp442DRp0eQZdt0Pw/exec"; // ganti
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0TwsLf9BZJERqiL7o57k6xOpqFwoig5hwFHJMYaOqgdoSawHuCPmNSOS15AvD7ubAGQ/exec"; // ganti
 
 loginForm.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -146,11 +146,12 @@ loginForm.addEventListener("submit", async function (event) {
   const voterData = { name, className };
 
   try {
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(voterData),
-    });
+    const voterData = {
+  name: name,
+  major: major, // Tambahkan ini
+  className: className,
+  timestamp: new Date().toISOString(), // Tambahkan ini
+};
 
     // simpan ke localStorage untuk gatekeeper
     localStorage.setItem("pilketosVoterData", JSON.stringify(voterData));
