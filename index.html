@@ -1,93 +1,193 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PILKETOS SKANEGU 2025 - Voting</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PILKETOS SKANEGU 2025 - Login Pemilih</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>🗳️ PILKETOS SKANEGU 2025 🗳️</h1>
-            <p>Pilih kandidat OSIS favoritmu!</p>
-        </header>
-<main>
-    <h2>Pilih Kandidatmu</h2>
-    <div id="candidates-container">
-        <div class="candidate-card">
-            <div class="card-content">
-                <img src="https://i.postimg.cc/d0j5Q3Dp/1.png" alt="Foto Kandidat 1">
-                <h3>Paslon No. 1</h3>
-                <p><b>Ardilla & Nazwa</b></p>
-                <p><b>Visi kami:</b></p>
-                <p class="visi">
-                Menjadikan OSIS SMKN 1 DLANGGU sebagai organisasi yang unggul dan terdepan untuk menampung segala aspirasi, bakat, potensi dan kreativitas siswa siswi dalam bidang akademik maupun non akademik dengan ilmu teknologi dan informasi, berlandaskan ilmu keagamaan selain itu juga membentuk kepengurusan OSIS yang memiliki tanggung jawab, berakhlak, berkualitas, peduli terhadap lingkungan sekitar serta memiliki rasa solidaritas yang tinggi sesama warga sekolah.
-                </p>
-            </div>
-            <button class="vote-btn" data-candidate="1">Pilih No. 1</button>
-        </div>
+      <header>
+        <h1>🗳️ PILKETOS SKANEGU 2025 🗳️</h1>
+        <p>Silakan isi data Anda untuk melanjutkan ke halaman voting.</p>
+      </header>
 
-        <div class="candidate-card">
-            <div class="card-content">
-                <img src="https://i.postimg.cc/SsZV8P6G/2.png" alt="Foto Kandidat 2">
-                <h3>Paslon No. 2</h3>
-                <p><b>Zyika & Nabil</b></p>
-                <p><b>Visi kami:</b></p>
-                <p class="visi">    
-                Menjadikan osis sebagai wadah untuk siswa berinovasi, kreatif serta mengembangkan potensi siswa secara maksimal di segala bidang.
-                </p>
-            </div>
-            <button class="vote-btn" data-candidate="2">Pilih No. 2</button>
-        </div>
+      <main>
+        <form id="login-form" class="login-form-container">
+          <div class="form-group">
+            <label for="voter-name">Nama Lengkap:</label>
+            <input
+              type="text"
+              id="voter-name"
+              required
+              placeholder="Masukkan nama lengkap Anda..."
+            />
+          </div>
 
-        <div class="candidate-card">
-            <div class="card-content">
-                <img src="https://i.postimg.cc/3Nd1ZZ9Q/3.png" alt="Foto Kandidat 3">
-                <h3>Paslon No. 3</h3>
-                <p><b>Zaky & Tyas</b></p>
-                <p><b>Visi kami:</b></p>
-                <p class="visi">
-                menjadikan osis skmn 1 dlanggu sebagai organisasi yang terstruktur dan mendukung siswa-siswi untuk menjadi pribadi yang berkarakter, religius, disiplin, kreatif, inovatif dan berbudaya lingkungan serta berprestasi.
-                </p>
-            </div>
-            <button class="vote-btn" data-candidate="3">Pilih No. 3</button>
-        </div>
+          <div class="form-group">
+            <label for="voter-major">Jurusan:</label>
+            <select id="voter-major" required>
+              <option value="">--- Pilih Jurusan ---</option>
+              <option value="RPL">Rekayasa Perangkat Lunak</option>
+              <option value="TKJ">Teknik Komputer dan Jaringan</option>
+              <option value="MM">Multimedia</option>
+              <option value="ANIMASI">Animasi</option>
+              <option value="PERHOTELAN">Perhotelan</option>
+              <option value="TATABOGA">Tata Boga</option>
+            </select>
+          </div>
+
+          <div class="form-group hidden" id="class-selection-group">
+            <label for="voter-class">Kelas:</label>
+            <select id="voter-class" required></select>
+          </div>
+
+          <button
+            type="submit"
+            class="vote-btn"
+            style="width: 100%; margin-top: 20px"
+          >
+            Lanjut ke Voting
+          </button>
+        </form>
+      </main>
     </div>
 
-    <div class="modal-overlay" id="confirmation-modal">
-    <div class="modal-content">
-        <h2 id="modal-title">Konfirmasi Pilihan</h2>
-        <p id="modal-message">Apakah Anda yakin ingin memilih kandidat ini?</p>
-        
-        <div class="modal-button-group">
-             <button class="modal-button" id="modal-confirm-btn" style="background-color: #28a745;">Ya, Saya Yakin</button>
-            <button class="modal-button" id="modal-cancel-btn" style="background-color: #dc3545; margin-left: 10px;">Batal</button>
-        </div>
-    </div>
-</div>
-</main>
-</html>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-      // Konfigurasi Firebase-mu
-      const firebaseConfig = {
-  apiKey: "AIzaSyDa2LihVje0_Wn7UvZDtEWlrHNDzBbZbqc",
-  authDomain: "pilketosskanegu.firebaseapp.com",
-  databaseURL: "https://pilketosskanegu-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "pilketosskanegu",
-  storageBucket: "pilketosskanegu.firebasestorage.app",
-  messagingSenderId: "81801718623",
-  appId: "1:81801718623:web:c0edf8e8cec1d53e27e4ea",
-  measurementId: "G-J1J5VMVETY"
-};
-      firebase.initializeApp(firebaseConfig);
+      // Data Struktur Kelas
+      // Ini adalah "database" kita untuk menentukan kelas mana yang muncul
+      const classData = {
+        RPL: [
+          "X RPL 1",
+          "X RPL 2",
+          "X RPL 3",
+          "XI RPL 1",
+          "XI RPL 2",
+          "XI RPL 3",
+          "XII RPL 1",
+          "XII RPL 2",
+          "XII RPL 3",
+        ],
+
+        TKJ: [
+          "X TKJ 1",
+          "X TKJ 2",
+          "X TKJ 3",
+          "XI TKJ 1",
+          "XI TKJ 2",
+          "XI TKJ 3",
+          "XII TKJ 1",
+          "XII TKJ 2",
+          "XII TKJ 3",
+        ],
+
+        MM: [
+          "X DKV 1",
+          "X DKV 2",
+          "X DKV 3",
+          "XI DKV 1",
+          "XI DKV 2",
+          "XI DKV 3",
+          "XII DKV 1",
+          "XII DKV 2",
+          "XII DKV 3",
+        ],
+
+        ANIMASI: [
+          "X ANIMASI 1",
+          "X ANIMASI 2",
+          "XI ANIMASI 1",
+          "XI ANIMASI 2",
+          "XII ANIMASI 1",
+          "XII ANIMASI 2",
+        ],
+
+        PERHOTELAN: [
+          "X PERHOTELAN 1",
+          "X PERHOTELAN 2",
+          "XI PERHOTELAN 1",
+          "XI PERHOTELAN 2",
+          "XII PERHOTELAN 1",
+          "XII PERHOTELAN 2",
+        ],
+
+        TATABOGA: [
+          "X TATABOGA 1",
+          "X TATABOGA 2",
+          "X TATABOGA 3",
+          "XI TATABOGA 1",
+          "XI TATABOGA 2",
+          "XI TATABOGA 3",
+          "XII TATABOGA 1",
+          "XII TATABOGA 2",
+          "XII TATABOGA 3",
+        ],
+      };
+
+      // Ambil elemen HTML yang kita butuhkan
+      const majorSelect = document.getElementById("voter-major");
+      const classSelect = document.getElementById("voter-class");
+      const classGroup = document.getElementById("class-selection-group");
+      const loginForm = document.getElementById("login-form");
+
+      // 1. Event Listener saat JURUSAN BERUBAH
+      majorSelect.addEventListener("change", function () {
+        const selectedMajor = this.value; // Ambil jurusan yang dipilih (misal: "RPL")
+
+        // Bersihkan dulu daftar kelas sebelumnya
+        classSelect.innerHTML = '<option value="">--- Pilih Kelas ---</option>';
+
+        if (selectedMajor && classData[selectedMajor]) {
+          // Jika jurusan dipilih DAN ada datanya di 'classData'
+
+          // Ambil daftar kelas yang sesuai (misal: array ["X RPL 1", "X RPL 2", ...])
+          const classes = classData[selectedMajor];
+
+          // Isi dropdown kelas dengan opsi baru
+          classes.forEach(function (className) {
+            const option = document.createElement("option");
+            option.value = className;
+            option.textContent = className;
+            classSelect.appendChild(option);
+          });
+
+          // TAMPILKAN dropdown kelas (dengan menghapus kelas 'hidden')
+          classGroup.classList.remove("hidden");
+        } else {
+          // Jika user memilih "--- Pilih Jurusan ---", SEMBUNYIKAN lagi dropdown kelas
+          classGroup.classList.add("hidden");
+        }
+      });
+
+      // 2. Event Listener saat FORM DI-SUBMIT
+      loginForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Hentikan reload halaman
+
+        // Ambil data dari semua input
+        const name = document.getElementById("voter-name").value;
+        const major = majorSelect.value;
+        const className = classSelect.value; // Ambil data kelas yang baru
+
+        // Validasi (sekarang kita cek kelas juga)
+        if (!name || !major || !className) {
+          alert("Nama, Jurusan, dan Kelas wajib diisi!");
+          return;
+        }
+
+        // Simpan data ke localStorage Browser
+        const voterData = {
+          name: name,
+          major: major,
+          className: className, // Simpan data kelas
+          timestamp: new Date().getTime(),
+        };
+
+        localStorage.setItem("pilketosVoterData", JSON.stringify(voterData));
+
+        // Arahkan ke halaman voting (index.html)
+        window.location.href = "vote.html";
+      });
     </script>
-    
-    <script src="script.js"></script> 
-</body>
+  </body>
 </html>
-
-
