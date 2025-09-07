@@ -89,65 +89,89 @@
         ],
       };
 
-      // Ambil elemen HTML yang kita butuhkan
-      const majorSelect = document.getElementById("voter-major");
-      const classSelect = document.getElementById("voter-class");
-      const classGroup = document.getElementById("class-selection-group");
-      const loginForm = document.getElementById("login-form");
+      // ===============================
+// Ambil elemen HTML
+// ===============================
+const majorSelect = document.getElementById("voter-major");
+const classSelect = document.getElementById("voter-class");
+const classGroup = document.getElementById("class-selection-group");
+const loginForm = document.getElementById("login-form");
+const voterNameInput = document.getElementById("voter-name");
 
-      // --- PENYESUAIAN DARI KODE SEBELUMNYA (AUTO-CAPSLOCK) DIMASUKKAN DI SINI ---
-      const voterNameInput = document.getElementById("voter-name");
-      voterNameInput.addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-      });
-      // --- AKHIR PENYESUAIAN ---
+// ===============================
+// Auto-uppercase untuk input nama
+// ===============================
+voterNameInput.addEventListener("input", function () {
+  this.value = this.value.toUpperCase();
+});
+
+// ===============================
+// 1. Event Listener saat JURUSAN BERUBAH
+// ===============================
+majorSelect.addEventListener("change", function () {
+  const selectedMajor = this.value;
+  classSelect.innerHTML = '<option value="">--- Pilih Kelas ---</option>';
+
+  if (selectedMajor && classData[selectedMajor]) {
+    const classes = classData[selectedMajor];
+    classes.forEach(function (className) {
+      const option = document.createElement("option");
+      option.value = className;
+      option.textContent = className;
+      classSelect.appendChild(option);
+    });
+    classGroup.classList.remove("hidden");
+  } else {
+    classGroup.classList.add("hidden");
+  }
+});
+
+// ===============================
+// 2. Event Listener saat FORM DI-SUBMIT
+// ===============================
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-BmZYQYNErUyscqDrs021GTbiYRCP-xPp850xHfnpdQorrNTrnqZS1-dZq6ViqoFnxA/exec"; // ganti dengan URL kamu
+
+loginForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const name = voterNameInput.value.trim();
+  const major = majorSelect.value;
+  const className = classSelect.value;
+
+  if (!name || !major || !className) {
+    alert("Nama, Jurusan, dan Kelas wajib diisi!");
+    return;
+  }
+
+  const voterData = {
+    name: name,
+    major: major,
+    className: className,
+    timestamp: new Date().toISOString(),
+  };
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(voterData),
+    });
+
+    if (!response.ok) throw new Error("Gagal kirim ke Google Script");
+
+    const result = await response.json();
+    console.log("Success:", result);
+
+    localStorage.setItem("pilketosVoterData", JSON.stringify(voterData));
+    window.location.href = "vote.html";
+
+  } catch (err) {
+    alert("Terjadi kegagalan saat menghubungkan ke daftar hadir. Coba lagi.\n" + err.message);
+    console.error(err);
+  }
+});
 
 
-      // 1. Event Listener saat JURUSAN BERUBAH (Kode Anda)
-      majorSelect.addEventListener("change", function () {
-        const selectedMajor = this.value; 
-        classSelect.innerHTML = '<option value="">--- Pilih Kelas ---</option>';
-
-        if (selectedMajor && classData[selectedMajor]) {
-          const classes = classData[selectedMajor];
-          classes.forEach(function (className) {
-            const option = document.createElement("option");
-            option.value = className;
-            option.textContent = className;
-            classSelect.appendChild(option);
-          });
-          classGroup.classList.remove("hidden");
-        } else {
-          classGroup.classList.add("hidden");
-        }
-      });
-
-      // 2. Event Listener saat FORM DI-SUBMIT (Kode Anda)
-      loginForm.addEventListener("submit", function (event) {
-        event.preventDefault(); 
-
-        // Nama yang diambil di sini otomatis sudah KAPITAL
-        const name = document.getElementById("voter-name").value; 
-        const major = majorSelect.value;
-        const className = classSelect.value; 
-
-        if (!name || !major || !className) {
-          alert("Nama, Jurusan, dan Kelas wajib diisi!");
-          return;
-        }
-
-        const voterData = {
-          name: name,
-          major: major,
-          className: className, 
-          timestamp: new Date().getTime(),
-        };
-
-        localStorage.setItem("pilketosVoterData", JSON.stringify(voterData));
-
-        // Mengarahkan ke "vote.html" (Sesuai kode baru Anda)
-        window.location.href = "vote.html"; 
-      });
     </script>
   </body>
 </html>
