@@ -1,4 +1,18 @@
-// =======================================
+
+
+ // Konfigurasi Firebase-mu
+      const firebaseConfig = {
+  apiKey: "AIzaSyDa2LihVje0_Wn7UvZDtEWlrHNDzBbZbqc",
+  authDomain: "pilketosskanegu.firebaseapp.com",
+  databaseURL: "https://pilketosskanegu-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "pilketosskanegu",
+  storageBucket: "pilketosskanegu.firebasestorage.app",
+  messagingSenderId: "81801718623",
+  appId: "1:81801718623:web:c0edf8e8cec1d53e27e4ea",
+  measurementId: "G-J1J5VMVETY"
+};
+      firebase.initializeApp(firebaseConfig);
+    </script>// =======================================
 // PENJAGA HALAMAN (GATEKEEPER)
 // =======================================
 // Cek data login dari localStorage
@@ -108,3 +122,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
