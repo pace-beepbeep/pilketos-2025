@@ -55,73 +55,37 @@
     </div>
 
     <script>
-      // Data Struktur Kelas
-      // Ini adalah "database" kita untuk menentukan kelas mana yang muncul
+      // Data Struktur Kelas (VERSI TERBARU ANDA)
       const classData = {
         RPL: [
-          "X RPL 1",
-          "X RPL 2",
-          "X RPL 3",
-          "XI RPL 1",
-          "XI RPL 2",
-          "XI RPL 3",
-          "XII RPL 1",
-          "XII RPL 2",
-          "XII RPL 3",
+          "X RPL 1", "X RPL 2", "X RPL 3",
+          "XI RPL 1", "XI RPL 2", "XI RPL 3",
+          "XII RPL 1", "XII RPL 2", "XII RPL 3",
         ],
-
         TKJ: [
-          "X TKJ 1",
-          "X TKJ 2",
-          "X TKJ 3",
-          "XI TKJ 1",
-          "XI TKJ 2",
-          "XI TKJ 3",
-          "XII TKJ 1",
-          "XII TKJ 2",
-          "XII TKJ 3",
+          "X TKJ 1", "X TKJ 2", "X TKJ 3",
+          "XI TKJ 1", "XI TKJ 2", "XI TKJ 3",
+          "XII TKJ 1", "XII TKJ 2", "XII TKJ 3",
         ],
-
         MM: [
-          "X DKV 1",
-          "X DKV 2",
-          "X DKV 3",
-          "XI DKV 1",
-          "XI DKV 2",
-          "XI DKV 3",
-          "XII DKV 1",
-          "XII DKV 2",
-          "XII DKV 3",
+          "X DKV 1", "X DKV 2", "X DKV 3",
+          "XI DKV 1", "XI DKV 2", "XI DKV 3",
+          "XII DKV 1", "XII DKV 2", "XII DKV 3",
         ],
-
         ANIMASI: [
-          "X ANIMASI 1",
-          "X ANIMASI 2",
-          "XI ANIMASI 1",
-          "XI ANIMASI 2",
-          "XII ANIMASI 1",
-          "XII ANIMASI 2",
+          "X ANIMASI 1", "X ANIMASI 2",
+          "XI ANIMASI 1", "XI ANIMASI 2",
+          "XII ANIMASI 1", "XII ANIMASI 2",
         ],
-
         PERHOTELAN: [
-          "X PERHOTELAN 1",
-          "X PERHOTELAN 2",
-          "XI PERHOTELAN 1",
-          "XI PERHOTELAN 2",
-          "XII PERHOTELAN 1",
-          "XII PERHOTELAN 2",
+          "X PERHOTELAN 1", "X PERHOTELAN 2",
+          "XI PERHOTELAN 1", "XI PERHOTELAN 2",
+          "XII PERHOTELAN 1", "XII PERHOTELAN 2",
         ],
-
         TATABOGA: [
-          "X TATABOGA 1",
-          "X TATABOGA 2",
-          "X TATABOGA 3",
-          "XI TATABOGA 1",
-          "XI TATABOGA 2",
-          "XI TATABOGA 3",
-          "XII TATABOGA 1",
-          "XII TATABOGA 2",
-          "XII TATABOGA 3",
+          "X TATABOGA 1", "X TATABOGA 2", "X TATABOGA 3",
+          "XI TATABOGA 1", "XI TATABOGA 2", "XI TATABOGA 3",
+          "XII TATABOGA 1", "XII TATABOGA 2", "XII TATABOGA 3",
         ],
       };
 
@@ -131,64 +95,61 @@
       const classGroup = document.getElementById("class-selection-group");
       const loginForm = document.getElementById("login-form");
 
-      // 1. Event Listener saat JURUSAN BERUBAH
-      majorSelect.addEventListener("change", function () {
-        const selectedMajor = this.value; // Ambil jurusan yang dipilih (misal: "RPL")
+      // --- PENYESUAIAN DARI KODE SEBELUMNYA (AUTO-CAPSLOCK) DIMASUKKAN DI SINI ---
+      const voterNameInput = document.getElementById("voter-name");
+      voterNameInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+      });
+      // --- AKHIR PENYESUAIAN ---
 
-        // Bersihkan dulu daftar kelas sebelumnya
+
+      // 1. Event Listener saat JURUSAN BERUBAH (Kode Anda)
+      majorSelect.addEventListener("change", function () {
+        const selectedMajor = this.value; 
         classSelect.innerHTML = '<option value="">--- Pilih Kelas ---</option>';
 
         if (selectedMajor && classData[selectedMajor]) {
-          // Jika jurusan dipilih DAN ada datanya di 'classData'
-
-          // Ambil daftar kelas yang sesuai (misal: array ["X RPL 1", "X RPL 2", ...])
           const classes = classData[selectedMajor];
-
-          // Isi dropdown kelas dengan opsi baru
           classes.forEach(function (className) {
             const option = document.createElement("option");
             option.value = className;
             option.textContent = className;
             classSelect.appendChild(option);
           });
-
-          // TAMPILKAN dropdown kelas (dengan menghapus kelas 'hidden')
           classGroup.classList.remove("hidden");
         } else {
-          // Jika user memilih "--- Pilih Jurusan ---", SEMBUNYIKAN lagi dropdown kelas
           classGroup.classList.add("hidden");
         }
       });
 
-      // 2. Event Listener saat FORM DI-SUBMIT
+      // 2. Event Listener saat FORM DI-SUBMIT (Kode Anda)
       loginForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Hentikan reload halaman
+        event.preventDefault(); 
 
-        // Ambil data dari semua input
-        const name = document.getElementById("voter-name").value;
+        // Nama yang diambil di sini otomatis sudah KAPITAL
+        const name = document.getElementById("voter-name").value; 
         const major = majorSelect.value;
-        const className = classSelect.value; // Ambil data kelas yang baru
+        const className = classSelect.value; 
 
-        // Validasi (sekarang kita cek kelas juga)
         if (!name || !major || !className) {
           alert("Nama, Jurusan, dan Kelas wajib diisi!");
           return;
         }
 
-        // Simpan data ke localStorage Browser
         const voterData = {
           name: name,
           major: major,
-          className: className, // Simpan data kelas
+          className: className, 
           timestamp: new Date().getTime(),
         };
 
         localStorage.setItem("pilketosVoterData", JSON.stringify(voterData));
 
-        // Arahkan ke halaman voting (index.html)
-        window.location.href = "vote.html";
+        // Mengarahkan ke "vote.html" (Sesuai kode baru Anda)
+        window.location.href = "vote.html"; 
       });
     </script>
   </body>
 </html>
+
 
