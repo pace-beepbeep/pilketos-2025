@@ -129,7 +129,7 @@ majorSelect.addEventListener("change", function () {
 // ===============================
 // 2. Event Listener saat FORM DI-SUBMIT
 // ===============================
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-BmZYQYNErUyscqDrs021GTbiYRCP-xPp850xHfnpdQorrNTrnqZS1-dZq6ViqoFnxA/exec"; // ganti dengan URL kamu
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwK9YJ75yvNoY4DWg7eshCEa1ftUzLgX3jd52dzu_OFB3iX0pecFOp442DRp0eQZdt0Pw/exec"; // ganti
 
 loginForm.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -143,33 +143,27 @@ loginForm.addEventListener("submit", async function (event) {
     return;
   }
 
-  const voterData = {
-    name: name,
-    major: major,
-    className: className,
-    timestamp: new Date().toISOString(),
-  };
+  const voterData = { name, className };
 
   try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
+    await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(voterData),
     });
 
-    if (!response.ok) throw new Error("Gagal kirim ke Google Script");
-
-    const result = await response.json();
-    console.log("Success:", result);
-
+    // simpan ke localStorage untuk gatekeeper
     localStorage.setItem("pilketosVoterData", JSON.stringify(voterData));
-    window.location.href = "vote.html";
 
+    // lanjut ke halaman vote
+    window.location.href = "vote.html";
+    
   } catch (err) {
-    alert("Terjadi kegagalan saat menghubungkan ke daftar hadir. Coba lagi.\n" + err.message);
+    alert("Gagal menyetor data ke spreadsheet. Coba lagi.\n" + err.message);
     console.error(err);
   }
 });
+
 
 
     </script>
