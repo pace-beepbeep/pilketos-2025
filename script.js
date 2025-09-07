@@ -1,3 +1,21 @@
+// =======================================
+// PENJAGA HALAMAN (GATEKEEPER)
+// =======================================
+// Cek data login dari localStorage
+const voterDataJSON = localStorage.getItem('pilketosVoterData');
+
+if (!voterDataJSON) {
+    // JIKA DATA TIDAK ADA (BELUM LOGIN):
+    // Tampilkan peringatan dan tendang kembali ke halaman masuk.html
+    alert('Anda harus login terlebih dahulu untuk mengakses halaman voting.');
+    window.location.replace('masuk.html'); // .replace() agar tidak bisa klik "back"
+} else {
+    // Jika data ada, kita bisa lanjutkan memuat script voting.
+    // (Opsional) Kita bisa menyapa pengguna:
+    const voterData = JSON.parse(voterDataJSON);
+    console.log(`Selamat datang, ${voterData.name} dari jurusan ${voterData.major}`);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const database = firebase.database();
     const voteButtons = document.querySelectorAll('.vote-btn');
