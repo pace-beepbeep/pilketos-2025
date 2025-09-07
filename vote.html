@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PILKETOS SKANEGU 2025 - Voting</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗳️ PILKETOS SKANEGU 2025 🗳️</h1>
+            <p>Pilih kandidat OSIS favoritmu!</p>
+        </header>
+<main>
+    <h2>Pilih Kandidatmu</h2>
+    <div id="candidates-container">
+        <div class="candidate-card">
+            <div class="card-content">
+                <img src="https://i.postimg.cc/rF37Qcyb/kandidat1.jpg" alt="Foto Kandidat 1">
+                <h3>Paslon No. 1</h3>
+                <p><b>Ardilla & Nazwa</b></p>
+                <p><b>Visi kami:</b></p>
+                <p class="visi">
+                Menjadikan OSIS SMKN 1 DLANGGU sebagai organisasi yang unggul dan terdepan untuk menampung segala aspirasi, bakat, potensi dan kreativitas siswa siswi dalam bidang akademik maupun non akademik dengan ilmu teknologi dan informasi, berlandaskan ilmu keagamaan selain itu juga membentuk kepengurusan OSIS yang memiliki tanggung jawab, berakhlak, berkualitas, peduli terhadap lingkungan sekitar serta memiliki rasa solidaritas yang tinggi sesama warga sekolah.
+                </p>
+            </div>
+            <button class="vote-btn" data-candidate="1">Pilih No. 1</button>
+        </div>
+
+        <div class="candidate-card">
+            <div class="card-content">
+                <img src="https://i.postimg.cc/XvchjCKS/kandidat2.jpg" alt="Foto Kandidat 2">
+                <h3>Paslon No. 2</h3>
+                <p><b>Zyika & Nabil</b></p>
+                <p><b>Visi kami:</b></p>
+                <p class="visi">    
+                Menjadikan osis sebagai wadah untuk siswa berinovasi, kreatif serta mengembangkan potensi siswa secara maksimal di segala bidang.
+                </p>
+            </div>
+            <button class="vote-btn" data-candidate="2">Pilih No. 2</button>
+        </div>
+
+        <div class="candidate-card">
+            <div class="card-content">
+                <img src="https://i.postimg.cc/bJy5swLG/kandidat3.jpg" alt="Foto Kandidat 3">
+                <h3>Paslon No. 3</h3>
+                <p><b>Zaky & Tyas</b></p>
+                <p><b>Visi kami:</b></p>
+                <p class="visi">
+                menjadikan osis skmn 1 dlanggu sebagai organisasi yang terstruktur dan mendukung siswa-siswi untuk menjadi pribadi yang berkarakter, religius, disiplin, kreatif, inovatif dan berbudaya lingkungan serta berprestasi.
+                </p>
+            </div>
+            <button class="vote-btn" data-candidate="3">Pilih No. 3</button>
+        </div>
+    </div>
+</main>
+
+<div class="modal-overlay" id="confirmation-modal">
+    <div class="modal-content">
+        <h2 id="modal-title">Konfirmasi Pilihan</h2>
+        <p id="modal-message">Apakah Anda yakin ingin memilih kandidat ini?</p>
+        
+        <div class="modal-button-group">
+             <button class="modal-button" id="modal-confirm-btn" style="background-color: #28a745;">Ya, Saya Yakin</button>
+            <button class="modal-button" id="modal-cancel-btn" style="background-color: #dc3545; margin-left: 10px;">Batal</button>
+        </div>
+    </div>
+</div>
+</html>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+      // Konfigurasi Firebase-mu
+      const firebaseConfig = {
+  apiKey: "AIzaSyDa2LihVje0_Wn7UvZDtEWlrHNDzBbZbqc",
+  authDomain: "pilketosskanegu.firebaseapp.com",
+  databaseURL: "https://pilketosskanegu-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "pilketosskanegu",
+  storageBucket: "pilketosskanegu.firebasestorage.app",
+  messagingSenderId: "81801718623",
+  appId: "1:81801718623:web:c0edf8e8cec1d53e27e4ea",
+  measurementId: "G-J1J5VMVETY"
+};
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <script src="script.js"></script> 
+</body>
+</html>
