@@ -1,6 +1,4 @@
-
-
- // Konfigurasi Firebase-mu
+// Konfigurasi Firebase-mu
       const firebaseConfig = {
   apiKey: "AIzaSyDa2LihVje0_Wn7UvZDtEWlrHNDzBbZbqc",
   authDomain: "pilketosskanegu.firebaseapp.com",
@@ -19,107 +17,108 @@ const voterDataJSON = localStorage.getItem('pilketosVoterData');
 
 if (!voterDataJSON) {
     // JIKA DATA TIDAK ADA (BELUM LOGIN):
-    // Tampilkan peringatan dan tendang kembali ke halaman masuk.html
     alert('Anda harus login terlebih dahulu untuk mengakses halaman voting.');
-    window.location.replace('masuk.html'); // .replace() agar tidak bisa klik "back"
+    window.location.replace('index.html'); // .replace() agar tidak bisa klik "back"
 } else {
     // Jika data ada, kita bisa lanjutkan memuat script voting.
-    // (Opsional) Kita bisa menyapa pengguna:
     const voterData = JSON.parse(voterDataJSON);
-    console.log(`Selamat datang, ${voterData.name} dari jurusan ${voterData.major}`);
+    console.log(`Selamat datang, ${voterData.name}`);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const database = firebase.database();
     const voteButtons = document.querySelectorAll('.vote-btn');
 
-    // 1. Ambil semua elemen modal yang kita buat di HTML
+    // 1. Ambil semua elemen modal
     const modalOverlay = document.getElementById('confirmation-modal');
     const modalMessage = document.getElementById('modal-message');
     const modalConfirmBtn = document.getElementById('modal-confirm-btn');
     const modalCancelBtn = document.getElementById('modal-cancel-btn');
 
-    // Variabel untuk menyimpan kandidat mana yang sedang akan dipilih
     let currentCandidateId = null;
     let currentCandidateNum = null;
 
     // 2. Logika VOTE (saat tombol "Pilih No. X" diklik)
     voteButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Ambil data kandidat dari tombol yang diklik
             currentCandidateNum = button.dataset.candidate;
             currentCandidateId = `candidate_${currentCandidateNum}`;
-            
-            // Alih-alih memanggil confirm(), kita panggil fungsi untuk menampilkan modal
             showConfirmationModal(currentCandidateNum);
         });
     });
 
     // 3. Fungsi untuk menampilkan modal
     function showConfirmationModal(candidateNum) {
-        // Atur pesan di dalam modal secara dinamis
         modalMessage.textContent = `Apakah Anda yakin ingin menambah suara untuk Paslon No. ${candidateNum}?`;
-        // Tampilkan modalnya (CSS di style.css akan menangani animasinya)
         modalOverlay.classList.add('show');
     }
 
     // 4. Fungsi untuk menyembunyikan modal
     function hideModal() {
         modalOverlay.classList.remove('show');
-        // Bersihkan data kandidat setelah modal ditutup
         currentCandidateId = null;
         currentCandidateNum = null;
     }
 
-    // 5. Tambahkan listener untuk tombol "Batal" di dalam modal
+    // 5. Listener tombol "Batal"
     modalCancelBtn.addEventListener('click', () => {
         hideModal();
     });
 
-    // 6. Tambahkan listener untuk tombol "Ya, Saya Yakin" di dalam modal
+    // 6. Listener tombol "Ya, Saya Yakin"
     modalConfirmBtn.addEventListener('click', () => {
-        // Jika tidak ada kandidat yang dipilih (seharusnya tidak terjadi, tapi untuk keamanan), hentikan proses
         if (!currentCandidateId) {
             hideModal();
             return;
         }
 
-        // Tampilkan status loading di tombol agar user tidak klik dua kali
         modalConfirmBtn.textContent = "Memproses...";
         modalConfirmBtn.disabled = true;
         modalCancelBtn.disabled = true;
 
-        // 7. Pindahkan Logika Firebase ke sini
-        const candidateVoteRef = database.ref(`votes/${currentCandidateId}`);
+        // ==============================================================
+        // 7. (PERBAIKAN) LOGIKA FIREBASE BARU (SISTEM LOGGING)
+        // ==============================================================
         
-        candidateVoteRef.transaction((currentVotes) => {
-            return (currentVotes || 0) + 1;
-        })
-        .then(() => {
-            // BERHASIL: Arahkan ke halaman 'thanks.html'
-            console.log("Vote berhasil disimpan. Mengarahkan ke halaman baru...");
-            window.location.href = 'thanks.html';
-        })
-        .catch((error) => {
-            // GAGAL: Tampilkan pesan error dan kembalikan tombol ke normal
-            console.error("Gagal menyimpan suara: ", error);
-            alert("Maaf, terjadi kesalahan saat menyimpan suara. Silakan coba lagi.");
+        // Kita tidak lagi menggunakan 'votes'. Kita buat lokasi data baru bernama 'vote_logs'.
+        // 'vote_logs' akan menyimpan SETIAP suara yang masuk sebagai catatan terpisah.
+        const logRef = database.ref('vote_logs'); 
             
-            // Kembalikan tombol modal ke keadaan semula jika gagal
-            modalConfirmBtn.textContent = "Ya, Saya Yakin";
-            modalConfirmBtn.disabled = false;
-            modalCancelBtn.disabled = false;
-            hideModal();
-        });
+        // Siapkan data yang akan disimpan. Ini menyertakan data pemilih DAN timestamp server.
+        const voterInfo = JSON.parse(voterDataJSON);
+        
+        const voteLogData = {
+            candidate: currentCandidateId, // Ini akan menyimpan "candidate_1", "candidate_2", dll.
+            voter_name: voterInfo.name,
+            voter_origin: voterInfo.major, // (misal: "RPL", "MAGANG", atau "GURU/STAFF")
+            voter_class_or_unit: voterInfo.className,
+            timestamp: firebase.database.ServerValue.TIMESTAMP // INI ADALAH TIMESTAMP SERVER (YANG ANDA BUTUHKAN)
+        };
+
+        // Push() membuat ID unik baru (seperti log) untuk setiap vote yang masuk
+        logRef.push(voteLogData)
+            .then(() => {
+                // BERHASIL: Arahkan ke halaman 'thanks.html'
+                console.log("Vote berhasil dicatat (logged).");
+                window.location.href = 'thanks.html';
+            })
+            .catch((error) => {
+                // GAGAL: Tampilkan pesan error
+                console.error("Gagal mencatat suara: ", error);
+                alert("Maaf, terjadi kesalahan saat mencatat suara. Silakan coba lagi.");
+                
+                // Kembalikan tombol modal
+                modalConfirmBtn.textContent = "Ya, Saya Yakin";
+                modalConfirmBtn.disabled = false;
+                modalCancelBtn.disabled = false;
+                hideModal();
+            });
     });
 
-    // Opsional: Tutup modal jika user mengklik area gelap di luar kotak modal
+    // Opsional: Tutup modal jika user mengklik area gelap
     modalOverlay.addEventListener('click', (event) => {
-        // Hanya tutup jika yang diklik adalah overlay-nya (latar belakang), bukan konten modalnya
         if (event.target === modalOverlay) {
             hideModal();
         }
     });
 });
-
-
