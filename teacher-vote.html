@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PILKETOS SKANEGU 2025 - Login Guru & Staff</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🗳️ PILKETOS SKANEGU 2025 🗳️</h1>
+        <p>
+          Khusus untuk Guru & Staff. Silakan masukkan nama lengkap Anda untuk melanjutkan.
+        </p>
+      </header>
+
+      <main>
+        <form id="teacher-login-form" class="login-form-container">
+          <div class="form-group">
+            <label for="voter-name">Nama Lengkap:</label>
+            <input
+              type="text"
+              id="voter-name"
+              required
+              placeholder="Masukkan nama lengkap Anda..."
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="vote-btn"
+            style="width: 100%; margin-top: 20px"
+          >
+            Lanjut ke Voting
+          </button>
+          
+          <!-- <p style="text-align: center; margin-top: 20px;">
+             Login sebagai <a href="index.html">Siswa Reguler</a> atau <a href="intern-vote.html">Siswa Magang</a>.
+          </p> -->
+        </form>
+      </main>
+    </div>
+
+    <script>
+      // API Absensi Reguler (Sama seperti di index.html)
+      // Ganti URL ini jika API absensi Anda berbeda
+      const ATTENDANCE_API_URL = "https://sheetdb.io/api/v1/xj4dsevzqdgpr"; 
+
+      // Ambil elemen HTML
+      const loginForm = document.getElementById("teacher-login-form");
+      const voterNameInput = document.getElementById("voter-name");
+
+      // Auto-uppercase untuk input nama
+      voterNameInput.addEventListener("input", function () {
+        this.value = this.value.toUpperCase();
+      });
+
+      // ==========================================================
+      // Event Listener saat FORM DI-SUBMIT
+      // ==========================================================
+      loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        
+        const submitButton = this.querySelector('button[type="submit"]');
+        const name = voterNameInput.value.trim();
+
+        if (!name) {
+          alert("Nama wajib diisi!");
+          return;
+        }
+
+        // Matikan tombol
+        submitButton.disabled = true;
+        submitButton.textContent = "Mencatat Kehadiran...";
+
+        const dataToSend = {
+          name: name,
+          major: "GURU/STAFF",       // Data statis untuk kolom 'major'
+          className: "STAFF",        // Data statis untuk kolom 'className'
+          timestamp: new Date().toISOString(),
+        };
+
+        try {
+          // 1. Kirim data ke API Absensi (SheetDB)
+          const response = await fetch(ATTENDANCE_API_URL, {
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(dataToSend)
+          });
+
+          if (!response.ok) {
+             const errorData = await response.json();
+             throw new Error(`Gagal mengirim data absensi: ${errorData.error || response.statusText}`);
+          }
+
+          // 2. Simpan data voter DAN HALAMAN ASAL
+          localStorage.setItem("pilketosVoterData", JSON.stringify(dataToSend));
+          localStorage.setItem("pilketosOriginPath", "guru.html"); // <-- SIMPAN ASAL HALAMAN
+
+          // 3. Lanjut ke halaman vote
+          window.location.href = "vote.html";
+
+        } catch (err) {
+          alert("Gagal mencatat data. Pastikan Anda terhubung ke internet dan coba lagi.\n\nError: " + err.message);
+          console.error(err);
+          
+          // Hidupkan lagi tombolnya jika gagal
+          submitButton.disabled = false;
+          submitButton.textContent = "Lanjut ke Voting";
+        }
+      });
+    </script>
+  </body>
+</html>

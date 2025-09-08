@@ -55,16 +55,14 @@
 
     <script>
       // ==========================================================
-      // PENTING! PERSIAPAN SPREADSHEET (SHEETDB)
+      // KEDUA API ENDPOINT (ABSENSI DAN TOKEN)
       // ==========================================================
-      // 1. Spreadsheet Anda HARUS memiliki 3 kolom: 'name', 'token', dan 'status'.
-      // 2. Kolom 'name' berisi nama lengkap siswa (buat UPPERCASE agar konsisten).
-      // 3. Kolom 'token' berisi token unik untuk siswa tersebut.
-      // 4. Kolom 'status' harus diisi dengan kata 'BELUM' untuk semua siswa di awal.
-      // 5. Ganti URL di bawah ini dengan URL API SheetDB spreadsheet token Anda.
-      //    (Ini BEDA API dari yang digunakan di index.html untuk absensi).
       
-      const TOKEN_API_URL = "https://sheetdb.io/api/v1/dz4olweo9hsa0"; // <-- GANTI INI
+      // API Absensi Reguler (Sama seperti di index.html)
+      const ATTENDANCE_API_URL = "https://sheetdb.io/api/v1/xj4dsevzqdgpr"; 
+      
+      // API Khusus Validasi Token Magang
+      const TOKEN_API_URL = "https://sheetdb.io/api/v1/dz4olweo9hsa0"; 
 
       // ===============================
       // Ambil elemen HTML
@@ -73,16 +71,13 @@
       const voterNameInput = document.getElementById("voter-name");
       const tokenInput = document.getElementById("voter-token");
 
-      // Auto-uppercase untuk input nama (agar konsisten dengan data spreadsheet)
+      // Auto-uppercase untuk input nama
       voterNameInput.addEventListener("input", function () {
         this.value = this.value.toUpperCase();
       });
 
       // ==========================================================
-      // Event Listener saat FORM DI-SUBMIT
-      // ==========================================================
-      // ==========================================================
-      // Event Listener saat FORM DI-SUBMIT (VERSI PERBAIKAN FINAL)
+      // Event Listener saat FORM DI-SUBMIT (VERSI LENGKAP)
       // ==========================================================
       loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -100,40 +95,28 @@
         submitButton.textContent = "Mengunduh data...";
 
         try {
-          // =================== LOGIKA BARU (MENGHINDARI /SEARCH) ===================
-          
-          // 1. Kita ambil SEMUA data dari URL API dasar (bukan .../search).
-          // Ini hanya memerlukan izin GET (Read) standar, yang selalu aktif.
+          // 1. Ambil SEMUA data dari API Token
           const responseRead = await fetch(TOKEN_API_URL); 
 
           if (!responseRead.ok) {
-            // Jika URL API dasarnya saja sudah salah atau API tidak aktif.
             throw new Error(`Gagal terhubung ke server database token. (Error: ${responseRead.status})`);
           }
 
-          const allVoterData = await responseRead.json(); // Ini adalah array [...] berisi SEMUA data
-
+          const allVoterData = await responseRead.json(); 
           submitButton.textContent = "Mencocokkan data...";
 
-          // 2. Kita cari data yang cocok di dalam browser menggunakan JavaScript (.find())
-          // Ini membandingkan input form (name, token) dengan setiap baris (record) dari spreadsheet
+          // 2. Cari data yang cocok di browser (JavaScript .find())
           const voterRecord = allVoterData.find(record => 
               record.name === name && record.token === token
           );
 
-          // 3. VALIDASI HASIL PENCARIAN LOKAL
+          // 3. Validasi Pencarian Lokal
           if (!voterRecord) {
-            // Jika tidak ditemukan di dalam array (nama atau token salah)
             throw new Error("Data tidak ditemukan. Pastikan Nama dan Token sesuai.");
           }
           
-          // =================== AKHIR LOGIKA BARU ===================
-
-
-          // 4. VALIDASI STATUS: Cek apakah token ini sudah pernah dipakai
-          // (Logika ini tetap sama dari sebelumnya)
+          // 4. Validasi Status (Cek apakah token sudah dipakai)
           if (voterRecord.status && voterRecord.status.toUpperCase() !== "BELUM") {
-             // Jika statusnya BUKAN "BELUM" (misal: "SUDAH")
              throw new Error("Token ini sudah digunakan untuk memilih.");
           }
            
@@ -141,8 +124,7 @@
           
           submitButton.textContent = "Memperbarui status...";
 
-          // 5. UPDATE STATUS (PATCH): Ubah status 'BELUM' menjadi 'SUDAH'
-          // (Logika ini tetap sama, bergantung pada izin PATCH Anda yang sudah ON)
+          // 5. UPDATE STATUS TOKEN (PATCH): Ubah status 'BELUM' menjadi 'SUDAH'
           const updateUrl = `${TOKEN_API_URL}/token/${encodeURIComponent(token)}`;
           const updateData = {
               status: "SUDAH", 
@@ -159,19 +141,58 @@
           });
           
           if (!responseUpdate.ok) {
-               // Jika ini gagal, berarti izin PATCH tidak aktif atau kolom 'token' tidak unik
-               throw new Error("Gagal memperbarui status data. Pastikan izin PATCH aktif di dashboard SheetDB.");
+             throw new Error("Gagal memperbarui status data token. Pastikan izin PATCH aktif.");
           }
 
-          // 6. SIMPAN ke localStorage (Logika ini tetap sama)
+          // ==========================================================
+          // 6. (FITUR BARU) KIRIM DATA ABSENSI KE SHEET UTAMA
+          // ==========================================================
+          submitButton.textContent = "Mencatat Absensi...";
+
+          const dataToSendToAttendance = {
+            name: voterRecord.name,
+            major: "MAGANG", // Tandai jurusannya sebagai "MAGANG"
+            className: voterRecord.token, // Gunakan token sebagai identitas kelas
+            timestamp: new Date().toISOString(),
+          };
+
+          try {
+              const responseAttendance = await fetch(ATTENDANCE_API_URL, {
+                  method: 'POST',
+                  headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(dataToSendToAttendance) 
+              });
+
+              if (!responseAttendance.ok) {
+                  // Jika GAGAL kirim absensi, JANGAN hentikan vote.
+                  // Cukup catat sebagai peringatan di console.
+                  console.warn("Peringatan: Gagal mencatat absensi intern, tapi vote tetap dilanjutkan.");
+              }
+          } catch (attendanceError) {
+              // Jika fetch ke absensi gagal, jangan hentikan vote
+              console.warn("Error saat mencatat absensi intern:", attendanceError.message);
+          }
+
+          // ==========================================================
+          // 7. (FITUR BARU) SIMPAN DATA KE LOCALSTORAGE UNTUK VOTE & REDIRECT
+          // ==========================================================
           const dataForStorage = {
               name: voterRecord.name,
               major: "MAGANG", 
               className: voterRecord.token 
           };
+          
+          // Simpan data voter (agar lolos penjaga di vote.html)
           localStorage.setItem("pilketosVoterData", JSON.stringify(dataForStorage));
+          
+          // Simpan halaman asal (agar thanks.html tahu harus kembali ke mana)
+          // (Ganti 'intern-vote.html' jika nama file Anda 'magang.html')
+          localStorage.setItem("pilketosOriginPath", "intern-vote.html"); 
 
-          // 7. Lanjut ke halaman vote
+          // 8. Lanjut ke halaman vote
           window.location.href = "vote.html";
 
         } catch (err) {
