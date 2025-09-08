@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PILKETOS SKANEGU 2025 - Login Pemilih (Magang)</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🗳️ PILKETOS SKANEGU 2025 🗳️</h1>
+        <p>
+          Khusus untuk siswa yang sedang magang (PKL).
+          Silakan masukkan Nama Lengkap dan Token unik Anda.
+        </p>
+      </header>
+
+      <main>
+        <form id="intern-login-form" class="login-form-container">
+          <div class="form-group">
+            <label for="voter-name">Nama Lengkap:</label>
+            <input
+              type="text"
+              id="voter-name"
+              required
+              placeholder="Masukkan nama lengkap sesuai data..."
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="voter-token">Token:</label>
+            <input
+              type="text"
+              id="voter-token"
+              required
+              placeholder="Masukkan token unik Anda..."
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="vote-btn"
+            style="width: 100%; margin-top: 20px"
+          >
+            Verifikasi & Lanjut Voting
+          </button>
+
+          <!-- <p style="text-align: center; margin-top: 20px;">
+             Bukan siswa magang? <a href="index.html">Kembali ke login reguler</a>.
+          </p> -->
+        </form>
+      </main>
+    </div>
+
+    <script>
+      // ==========================================================
+      // PENTING! PERSIAPAN SPREADSHEET (SHEETDB)
+      // ==========================================================
+      // 1. Spreadsheet Anda HARUS memiliki 3 kolom: 'name', 'token', dan 'status'.
+      // 2. Kolom 'name' berisi nama lengkap siswa (buat UPPERCASE agar konsisten).
+      // 3. Kolom 'token' berisi token unik untuk siswa tersebut.
+      // 4. Kolom 'status' harus diisi dengan kata 'BELUM' untuk semua siswa di awal.
+      // 5. Ganti URL di bawah ini dengan URL API SheetDB spreadsheet token Anda.
+      //    (Ini BEDA API dari yang digunakan di index.html untuk absensi).
+      
+      const TOKEN_API_URL = "https://sheetdb.io/api/v1/dz4olweo9hsa0"; // <-- GANTI INI
+
+      // ===============================
+      // Ambil elemen HTML
+      // ===============================
+      const loginForm = document.getElementById("intern-login-form");
+      const voterNameInput = document.getElementById("voter-name");
+      const tokenInput = document.getElementById("voter-token");
+
+      // Auto-uppercase untuk input nama (agar konsisten dengan data spreadsheet)
+      voterNameInput.addEventListener("input", function () {
+        this.value = this.value.toUpperCase();
+      });
+
+      // ==========================================================
+      // Event Listener saat FORM DI-SUBMIT
+      // ==========================================================
+      // ==========================================================
+      // Event Listener saat FORM DI-SUBMIT (VERSI PERBAIKAN FINAL)
+      // ==========================================================
+      loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        const name = voterNameInput.value.trim();
+        const token = tokenInput.value.trim();
+
+        if (!name || !token) {
+          alert("Nama dan Token wajib diisi!");
+          return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Mengunduh data...";
+
+        try {
+          // =================== LOGIKA BARU (MENGHINDARI /SEARCH) ===================
+          
+          // 1. Kita ambil SEMUA data dari URL API dasar (bukan .../search).
+          // Ini hanya memerlukan izin GET (Read) standar, yang selalu aktif.
+          const responseRead = await fetch(TOKEN_API_URL); 
+
+          if (!responseRead.ok) {
+            // Jika URL API dasarnya saja sudah salah atau API tidak aktif.
+            throw new Error(`Gagal terhubung ke server database token. (Error: ${responseRead.status})`);
+          }
+
+          const allVoterData = await responseRead.json(); // Ini adalah array [...] berisi SEMUA data
+
+          submitButton.textContent = "Mencocokkan data...";
+
+          // 2. Kita cari data yang cocok di dalam browser menggunakan JavaScript (.find())
+          // Ini membandingkan input form (name, token) dengan setiap baris (record) dari spreadsheet
+          const voterRecord = allVoterData.find(record => 
+              record.name === name && record.token === token
+          );
+
+          // 3. VALIDASI HASIL PENCARIAN LOKAL
+          if (!voterRecord) {
+            // Jika tidak ditemukan di dalam array (nama atau token salah)
+            throw new Error("Data tidak ditemukan. Pastikan Nama dan Token sesuai.");
+          }
+          
+          // =================== AKHIR LOGIKA BARU ===================
+
+
+          // 4. VALIDASI STATUS: Cek apakah token ini sudah pernah dipakai
+          // (Logika ini tetap sama dari sebelumnya)
+          if (voterRecord.status && voterRecord.status.toUpperCase() !== "BELUM") {
+             // Jika statusnya BUKAN "BELUM" (misal: "SUDAH")
+             throw new Error("Token ini sudah digunakan untuk memilih.");
+          }
+           
+          // === LOLOS VALIDASI (Data ada dan status 'BELUM') ===
+          
+          submitButton.textContent = "Memperbarui status...";
+
+          // 5. UPDATE STATUS (PATCH): Ubah status 'BELUM' menjadi 'SUDAH'
+          // (Logika ini tetap sama, bergantung pada izin PATCH Anda yang sudah ON)
+          const updateUrl = `${TOKEN_API_URL}/token/${encodeURIComponent(token)}`;
+          const updateData = {
+              status: "SUDAH", 
+              timestamp: new Date().toISOString()
+          };
+
+          const responseUpdate = await fetch(updateUrl, {
+              method: 'PATCH',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(updateData)
+          });
+          
+          if (!responseUpdate.ok) {
+               // Jika ini gagal, berarti izin PATCH tidak aktif atau kolom 'token' tidak unik
+               throw new Error("Gagal memperbarui status data. Pastikan izin PATCH aktif di dashboard SheetDB.");
+          }
+
+          // 6. SIMPAN ke localStorage (Logika ini tetap sama)
+          const dataForStorage = {
+              name: voterRecord.name,
+              major: "MAGANG", 
+              className: voterRecord.token 
+          };
+          localStorage.setItem("pilketosVoterData", JSON.stringify(dataForStorage));
+
+          // 7. Lanjut ke halaman vote
+          window.location.href = "vote.html";
+
+        } catch (err) {
+          alert("Verifikasi Gagal:\n\n" + err.message);
+          console.error(err);
+          
+          submitButton.disabled = false;
+          submitButton.textContent = "Verifikasi & Lanjut Voting";
+        }
+      });
+    </script>
+  </body>
+</html>

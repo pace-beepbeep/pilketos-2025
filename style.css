@@ -380,3 +380,38 @@ img {
 .form-group.hidden {
     display: none;
 }
+
+/* ... (Seluruh CSS Anda yang sudah ada) ... */
+
+
+/* ================================== */
+/* CSS UNTUK TAUTAN LOGIN MAGANG      */
+/* ================================== */
+
+.internship-link-container {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed #ccc;
+}
+
+.internship-link-container p {
+    margin-bottom: 10px;
+    color: #555;
+    font-weight: 600;
+}
+
+.internship-link-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #28a745; /* Warna hijau agar beda */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.internship-link-button:hover {
+    background-color: #218838;
+}
