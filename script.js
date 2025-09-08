@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(() => {
                 // BERHASIL: Arahkan ke halaman 'thanks.html'
                 console.log("Vote berhasil dicatat (logged).");
-                window.location.href = 'thanks.html';
+                window.location.href = 'q3wum432m4uTHANKS-023u409-32u4m09238mu402u.html';
             })
             .catch((error) => {
                 // GAGAL: Tampilkan pesan error
