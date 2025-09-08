@@ -99,7 +99,9 @@
 
           // 2. Simpan data voter DAN HALAMAN ASAL
           localStorage.setItem("pilketosVoterData", JSON.stringify(dataToSend));
-          localStorage.setItem("pilketosOriginPath", "guru.html"); // <-- SIMPAN ASAL HALAMAN
+          
+          // === PERUBAHAN DI SINI (KOREKSI) ===
+          localStorage.setItem("pilketosOriginPath", "teacher-vote.html"); // <-- DISESUAIKAN DENGAN NAMA FILE
 
           // 3. Lanjut ke halaman vote
           window.location.href = "vote.html";

@@ -41,10 +41,33 @@
             <h1>Terima Kasih!</h1>
             <p>Suara Anda telah berhasil direkam dan sangat berarti untuk masa depan OSIS SMKN 1 DLANGGU.</p>
             <div class="button-group">
-                <a href="index.html" class="results-button back-button">⬅️ Kembali ke Halaman Awal</a>
+                <a href="index.html" class="results-button back-button" id="back-to-login-btn">⬅️ Kembali ke Halaman Awal</a>
             </div>
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Cari tombol "Kembali"
+            const backButton = document.getElementById('back-to-login-btn'); 
+
+            // 2. Ambil halaman asal login DARI localStorage
+            // (Data ini disimpan oleh index.html, intern-vote.html, atau teacher-vote.html)
+            const originPath = localStorage.getItem('pilketosOriginPath');
+
+            // 3. Set link tombol berdasarkan halaman asal
+            if (originPath) {
+                // Jika data ditemukan (misal: "intern-vote.html" atau "teacher-vote.html")
+                // Ganti href tombol agar mengarah ke halaman yang benar.
+                backButton.href = originPath;
+            } 
+            // Jika tidak ada data (fallback), biarkan href default (index.html) yang sudah ada di HTML.
+
+            // 4. Hapus data sesi voting (Data Login & Path)
+            // Ini untuk menyelesaikan sesi voting.
+            localStorage.removeItem('pilketosVoterData');
+            localStorage.removeItem('pilketosOriginPath');
+        });
+    </script>
 </body>
 </html>

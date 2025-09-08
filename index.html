@@ -186,6 +186,11 @@
 
           // 2. Jika BERHASIL kirim, simpan ke localStorage untuk penjaga halaman vote
           localStorage.setItem("pilketosVoterData", JSON.stringify(dataToSend));
+          
+          // === TAMBAHAN BARU (MEMENUHI PERMINTAAN ANDA) ===
+          // Simpan halaman asal agar thanks.html tahu harus kembali ke mana
+          localStorage.setItem("pilketosOriginPath", "index.html"); 
+          // =================================================
 
           // 3. Lanjut ke halaman vote
           window.location.href = "vote.html";
