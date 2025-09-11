@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             breakdownHTML += `
                 <div class="result-bar">
                     <div class="result-info">
-                        <span><strong>Paslon No. ${candidate.id}</strong></span>
+                        <span><strong></strong></span>
                         <span>${candidate.votes} suara</span>
                     </div>
                     <div class="progress">
@@ -116,4 +116,5 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
 });
